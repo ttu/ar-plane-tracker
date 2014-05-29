@@ -1,41 +1,116 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using GART.BaseControls;
+using Microsoft.Devices;
+using Microsoft.Devices.Sensors;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using ArPlaneTrackerClient.Resources;
+using System;
+using System.Device.Location;
+using System.Windows;
 
 namespace ArPlaneTrackerClient
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        private GeoCoordinateWatcher _watcher;
+        private MainViewModel _vm;
+
         // Constructor
         public MainPage()
         {
+            // TODO: DI
+            _vm = new MainViewModel();
+            this.DataContext = _vm;
+
             InitializeComponent();
 
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            // Start AR services
+            ArDisplay.StartServices();
 
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
+            if (!PhotoCamera.IsCameraTypeSupported(CameraType.Primary))
+            {
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    _vm.InfoText = "A Camera is not available on this phone.";
+                });
 
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+                return;
+            }
+
+            if (!Motion.IsSupported)
+            {
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    _vm.InfoText = "The Motion API is not supported on this device.";
+                });
+
+                return;
+            }
+
+            if (_watcher == null)
+            {
+                _watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
+                _watcher.PositionChanged += _watcher_PositionChanged;
+            }
+
+            try
+            {
+                _watcher.Start();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("unable to start the Motion API.");
+            }
+        }
+
+        private void _watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            // TODO: How to do binding to ARItems?
+            var newData = _vm.GetPositionData(e.Position.Location);
+
+            if (newData != null)
+                ArDisplay.ARItems = newData;
+        }
+
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            // Stop AR services
+            ArDisplay.StopServices();
+
+            if (_watcher != null)
+            {
+                _watcher.Dispose();
+            }
+        }
+
+        // Ensure that the viewfinder is upright in LandscapeRight.
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (ArDisplay != null)
+            {
+                var orientation = ControlOrientation.Default;
+
+                switch (e.Orientation)
+                {
+                    case PageOrientation.LandscapeLeft:
+                        orientation = ControlOrientation.Clockwise270Degrees;
+                        ArDisplay.Visibility = Visibility.Visible;
+                        break;
+
+                    case PageOrientation.LandscapeRight:
+                        orientation = ControlOrientation.Clockwise90Degrees;
+                        ArDisplay.Visibility = Visibility.Visible;
+                        break;
+                }
+
+                ArDisplay.Orientation = orientation;
+            }
+
+            base.OnOrientationChanged(e);
+        }
     }
 }
