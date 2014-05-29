@@ -1,10 +1,12 @@
 ﻿using GART.BaseControls;
+using GART.Data;
 using Microsoft.Devices;
 using Microsoft.Devices.Sensors;
 using Microsoft.Phone.Controls;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Device.Location;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ArPlaneTrackerClient
@@ -19,6 +21,8 @@ namespace ArPlaneTrackerClient
         {
             // TODO: DI
             _vm = new MainViewModel();
+            _vm.NewData += _vm_NewData;
+
             this.DataContext = _vm;
 
             InitializeComponent();
@@ -68,15 +72,6 @@ namespace ArPlaneTrackerClient
             }
         }
 
-        private async void _watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            // TODO: How to do binding to ARItems?
-            var newData = await _vm.GetPositionData(e.Position.Location);
-
-            if (newData != null)
-                ArDisplay.ARItems = newData;
-        }
-
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             // Stop AR services
@@ -112,6 +107,20 @@ namespace ArPlaneTrackerClient
             }
 
             base.OnOrientationChanged(e);
+        }
+
+        private void _watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            _vm.SetPosition(e.Position.Location);
+        }
+
+        private void _vm_NewData(object sender, IList<FlightInfoARItem> e)
+        {
+            this.Dispatcher.BeginInvoke(() =>
+                {
+                    _vm.InfoText = "Data received";
+                    ArDisplay.ARItems = new ObservableCollection<ARItem>(e);
+                });
         }
     }
 }

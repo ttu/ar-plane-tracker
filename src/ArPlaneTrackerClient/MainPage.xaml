@@ -19,7 +19,8 @@
             <Border CornerRadius="8" Width="320" Canvas.ZIndex="20">
                 <StackPanel Margin="4">
                     <TextBlock x:Name="ModelBlock" TextWrapping="NoWrap" Text="{Binding Model}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
-                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceToUserKm}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
+                    <TextBlock x:Name="AltitudeBlock" TextWrapping="NoWrap" Text="{Binding AltitudeText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
+                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
                 </StackPanel>
             </Border>
         </DataTemplate>

@@ -26,5 +26,10 @@ namespace ArPlaneTrackerClient
         public string Model { get; set; }
 
         public double DistanceToUserKm { get; set; }
+
+        public string DistanceText { get { return string.Format("Dist: {0}m", DistanceToUserKm); } }
+
+        public string AltitudeText { get { return string.Format("Alt: {0}m", AltitudeM); } }
+
     }
 }

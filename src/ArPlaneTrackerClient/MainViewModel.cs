@@ -1,7 +1,9 @@
-﻿using GART.Data;
+﻿using FlightDataService.Models;
+using GART.Data;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Device.Location;
-using System.Threading.Tasks;
 
 namespace ArPlaneTrackerClient
 {
@@ -13,9 +15,28 @@ namespace ArPlaneTrackerClient
         public MainViewModel()
         {
             ItemsToTrack = new ObservableCollection<ARItem>();
-            _client = new FlightPositionClientMock();
-            InfoText = "Hello";
+            _client = new FlightPositionClient();
+            _client.NewData += _client_NewData;
+
+            InfoText = "Starting";
         }
+
+        private void _client_NewData(object sender, IList<FlightInfoDTO> e)
+        {
+            var arItems = new List<FlightInfoARItem>();
+
+            foreach (var dto in e)
+            {
+                arItems.Add(dto.MapToARItem());
+            }
+
+            var handler = NewData;
+
+            if (handler != null)
+                handler(this, arItems);
+        }
+
+        public event EventHandler<IList<FlightInfoARItem>> NewData;
 
         public ObservableCollection<ARItem> ItemsToTrack { get; set; }
 
@@ -25,36 +46,19 @@ namespace ArPlaneTrackerClient
             set { Set(value); }
         }
 
-        public async Task<ObservableCollection<ARItem>> GetPositionData(GeoCoordinate geoCoordinate)
+        public void SetPosition(GeoCoordinate geoCoordinate)
         {
             if (!geoCoordinate.IsUnknown)
             {
                 if (_currentLocation != geoCoordinate)
                 {
+                    InfoText = "Position changed";
+
                     _currentLocation = geoCoordinate;
 
-                    var data = await _client.GetData();
-
-                    var items = new ObservableCollection<ARItem>();
-
-                    foreach (var flightDTO in data)
-                    {
-                        items.Add(flightDTO.MapToARItem());
-                    }
-
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(22.20, 114.11), Content = "Hong Kong" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(59.17, 18.03), Content = "Stockholm" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(35.40, 139.45), Content = "Tokyo" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(47.30, 19.05), Content = "Budapest" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(40.42, 74), Content = "A" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(55.45, 37.36), Content = "Moscow" });
-                    //items.Add(new ARItem() { GeoLocation = new GeoCoordinate(60.1, 25), Content = "Helsinki" });
-
-                    return items;
+                    _client.SetLocation(_currentLocation.Latitude, _currentLocation.Longitude, _currentLocation.Altitude);
                 }
             }
-
-            return null;
         }
     }
 }
