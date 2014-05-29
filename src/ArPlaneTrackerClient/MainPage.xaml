@@ -16,9 +16,10 @@
 
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="MyItemTemplate">
-            <Border BorderBrush="Black" BorderThickness="4" CornerRadius="8" Background="#FF003847" Width="320" Canvas.ZIndex="20">
+            <Border CornerRadius="8" Width="320" Canvas.ZIndex="20">
                 <StackPanel Margin="4">
-                    <TextBlock x:Name="NameBlock" TextWrapping="NoWrap" Text="{Binding Content}" FontSize="38" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
+                    <TextBlock x:Name="ModelBlock" TextWrapping="NoWrap" Text="{Binding Model}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
+                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceToUserKm}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
                 </StackPanel>
             </Border>
         </DataTemplate>

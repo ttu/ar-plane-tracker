@@ -4,6 +4,7 @@ using Microsoft.Devices.Sensors;
 using Microsoft.Phone.Controls;
 using System;
 using System.Device.Location;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ArPlaneTrackerClient
@@ -67,10 +68,10 @@ namespace ArPlaneTrackerClient
             }
         }
 
-        private void _watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        private async void _watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             // TODO: How to do binding to ARItems?
-            var newData = _vm.GetPositionData(e.Position.Location);
+            var newData = await _vm.GetPositionData(e.Position.Location);
 
             if (newData != null)
                 ArDisplay.ARItems = newData;
