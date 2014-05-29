@@ -43,7 +43,7 @@ namespace FlightDataService
             _stopTimer.Elapsed += _stopTimer_Elapsed;
 
             _downloadTimer.Interval = 10000;
-            _downloadTimer.Elapsed += _fetchTimer_Elapsed;
+            _downloadTimer.Elapsed += _downloadTimer_Elapsed;
 
             _updateSender = Task.Factory.StartNew(ClientUpdateAction);
 
@@ -108,10 +108,10 @@ namespace FlightDataService
 
         private async Task<List<FlightInfo>> GetFlightListWhenReady()
         {
-            while (_allFlights == null)
+            if (_allFlights == null)
             {
                 CheckDownloadTimer();
-                await Task.Delay(50);
+                await FetchActionAsync();
             }
 
             return _allFlights;
@@ -183,8 +183,6 @@ namespace FlightDataService
             return retVal;
         }
 
-
-
         private void ClientUpdateAction()
         {
             while (true)
@@ -214,7 +212,7 @@ namespace FlightDataService
             }
         }
 
-        private async void _fetchTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void _downloadTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Debug.WriteLine("Download timer elapsed");
 
