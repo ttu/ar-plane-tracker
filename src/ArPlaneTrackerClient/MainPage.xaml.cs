@@ -23,6 +23,8 @@ namespace ArPlaneTrackerClient
             _vm = new MainViewModel();
             _vm.NewData += _vm_NewData;
 
+            _vm.Start();
+
             this.DataContext = _vm;
 
             InitializeComponent();
@@ -65,10 +67,11 @@ namespace ArPlaneTrackerClient
             try
             {
                 _watcher.Start();
+                SetLastItems();
             }
             catch (Exception)
             {
-                MessageBox.Show("unable to start the Motion API.");
+                _vm.InfoText = "unable to start the Motion API";
             }
         }
 
@@ -118,9 +121,21 @@ namespace ArPlaneTrackerClient
         {
             this.Dispatcher.BeginInvoke(() =>
                 {
-                    _vm.InfoText = "Data received";
+                    _vm.InfoText = string.Format("Data received: {0} planes", e.Count);
                     ArDisplay.ARItems = new ObservableCollection<ARItem>(e);
                 });
+        }
+
+        private void SetLastItems()
+        {
+            if (!_vm.IsInitialized)
+                return;
+
+            this.Dispatcher.BeginInvoke(() =>
+            {
+                _vm.InfoText = string.Format("Data recovered: {0} planes", _vm.LastItems.Count);
+                ArDisplay.ARItems = new ObservableCollection<ARItem>(_vm.LastItems);
+            });
         }
     }
 }

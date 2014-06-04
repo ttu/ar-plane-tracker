@@ -16,11 +16,12 @@
 
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="MyItemTemplate">
-            <Border CornerRadius="8" Width="320" Canvas.ZIndex="20">
-                <StackPanel Margin="4">
-                    <TextBlock x:Name="ModelBlock" TextWrapping="NoWrap" Text="{Binding Model}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
-                    <TextBlock x:Name="AltitudeBlock" TextWrapping="NoWrap" Text="{Binding AltitudeText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
-                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" />
+            <Border CornerRadius="8" Width="320" Canvas.ZIndex="20" Background="WhiteSmoke">
+                <StackPanel Margin="4" Background="White">
+                    <TextBlock x:Name="RegistrationBlock" TextWrapping="NoWrap" Text="{Binding ModelText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    <TextBlock x:Name="ModelBlock" TextWrapping="NoWrap" Text="{Binding SpeedText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    <TextBlock x:Name="AltitudeBlock" TextWrapping="NoWrap" Text="{Binding AltitudeText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceText}" FontSize="24" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
                 </StackPanel>
             </Border>
         </DataTemplate>

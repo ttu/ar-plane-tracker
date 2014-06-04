@@ -2,7 +2,6 @@
 using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace ArPlaneTrackerClient
@@ -14,34 +13,24 @@ namespace ArPlaneTrackerClient
 
         public FlightPositionClient()
         {
-            Start();
+            _hub = new HubConnection("http://ttuplanepositionservice.azurewebsites.net//");
+            _proxy = _hub.CreateHubProxy("FlightsHub");
+            _proxy.On<List<FlightInfoDTO>>("newData", datas => HandleDatas(datas));
         }
 
         public event EventHandler<IList<FlightInfoDTO>> NewData;
 
-        public async Task Start()
+        public async Task<bool> Start()
         {
-            try
-            {
-                _hub = new HubConnection("http://www.contoso.com/");    
-                _proxy = _hub.CreateHubProxy("FlightsHub");
-                _proxy.On<List<FlightInfoDTO>>("newData", datas => HandleDatas(datas));
+            await _hub.Start();
 
-                await _hub.Start();
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
+            if (_hub.State != ConnectionState.Connected)
+                return false;
+
+            return true;
         }
 
-        private void HandleDatas(List<FlightInfoDTO> datas)
-        {
-            var handler = NewData;
-
-            if (handler != null)
-                handler(this, datas);
-        }
+        public bool IsConnected { get { return _hub.State == ConnectionState.Connected; } }
 
         public async Task<IList<FlightInfoDTO>> GetData()
         {
@@ -56,6 +45,14 @@ namespace ArPlaneTrackerClient
         {
             if (_hub.State == ConnectionState.Connected)
                 _proxy.Invoke("SetLocation", latitude, longitude, altitude);
+        }
+
+        private void HandleDatas(List<FlightInfoDTO> datas)
+        {
+            var handler = NewData;
+
+            if (handler != null)
+                handler(this, datas);
         }
     }
 }

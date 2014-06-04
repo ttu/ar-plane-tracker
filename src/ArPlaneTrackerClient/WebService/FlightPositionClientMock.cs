@@ -9,6 +9,15 @@ namespace ArPlaneTrackerClient
     {
         public event EventHandler<IList<FlightInfoDTO>> NewData;
 
+        public bool IsConnected { get { return true; } }
+
+        public async Task<bool> Start()
+        {
+            await Task.Delay(1000);
+
+            return true;
+        }
+
         public void SetLocation(double latitude, double longitude, double altitude)
         {
             var datas = new List<FlightInfoDTO>();
