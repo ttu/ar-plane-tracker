@@ -1,41 +1,131 @@
 ﻿using GART.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Device.Location;
+using System.Runtime.CompilerServices;
 
 namespace ArPlaneTrackerClient
 {
     public class FlightInfoARItem : ARItem
     {
-        public double Latitude { get; set; }
+        private readonly Dictionary<string, object> _propertyBackingDictionary = new Dictionary<string, object>();
 
-        public double Longitude { get; set; }
+        public double Latitude
+        {
+            get { return Get<double>(); }
+            set { Set(value); }
+        }
 
-        public double AltitudeM { get; set; }
+        public double Longitude
+        {
+            get { return Get<double>(); }
+            set { Set(value); }
+        }
 
-        public double SpeedKmh { get; set; }
+        public double AltitudeM
+        {
+            get { return Get<double>(); }
+            set { Set(value); }
+        }
 
-        public string Registration { get; set; }
+        public double SpeedKmh
+        {
+            get { return Get<double>(); }
+            set { Set(value); }
+        }
 
-        public string Source { get; set; }
+        public string Registration
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
 
-        public string Destination { get; set; }
+        public string Source
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
 
-        public string Model { get; set; }
+        public string Destination
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
 
-        public double DistanceToUserKm { get; set; }
+        public string Model
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
 
-        public string DistanceText { get { return string.Format("Dist: {0} km", DistanceToUserKm); } }
+        public double DistanceToUserKm
+        {
+            get { return Get<double>(); }
+            set { Set(value); }
+        }
 
-        public string AltitudeText { get { return string.Format("Alt: {0} m", AltitudeM); } }
+        private string Id { get { return this.Model + this.Registration + this.Source + this.Destination; } }
 
-        public string ModelText { get { return string.Format("{0} / {1}", Registration, Model); } }
+        public override bool Equals(object obj)
+        {
+            var item = obj as FlightInfoARItem;
+            ;
 
-        public string SpeedText { get { return string.Format("Speed: {0} km/h", SpeedKmh); } }
+            if (item == null)
+            {
+                return false;
+            }
 
+            return this.Id.Equals(item.Id);
+        }
 
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
 
+        public void UpdateValuesFrom(FlightInfoARItem newItem)
+        {
+            this.Latitude = newItem.Latitude;
+            this.Longitude = newItem.Longitude;
+            this.SpeedKmh = newItem.SpeedKmh;
+            this.AltitudeM = newItem.AltitudeM;
+            this.DistanceToUserKm = newItem.DistanceToUserKm;
+            this.GeoLocation = new GeoCoordinate(this.Latitude, this.Longitude, this.AltitudeM);
+        }
+
+        #region BaseClassStuff
+
+        /// <summary>
+        /// Return value for property from backing dictionary
+        /// </summary>
+        protected T Get<T>([CallerMemberName] string propertyName = null)
+        {
+            if (propertyName == null) throw new ArgumentNullException("propertyName");
+
+            object value;
+            if (_propertyBackingDictionary.TryGetValue(propertyName, out value))
+            {
+                return (T)value;
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Set property value to backing dictionary
+        /// </summary>
+        protected bool Set<T>(T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (propertyName == null) throw new ArgumentNullException("propertyName");
+
+            if (EqualityComparer<T>.Default.Equals(newValue, Get<T>(propertyName))) return false;
+
+            _propertyBackingDictionary[propertyName] = newValue;
+            NotifyPropertyChanged(propertyName);
+            return true;
+        }
+
+        #endregion BaseClassStuff
     }
 }

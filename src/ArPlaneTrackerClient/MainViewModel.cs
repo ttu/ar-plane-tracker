@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Device.Location;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace ArPlaneTrackerClient
 {
@@ -12,9 +14,12 @@ namespace ArPlaneTrackerClient
     {
         private GeoCoordinate _currentLocation;
         private IFlightPositionClient _client;
+        private Dispatcher _dispatcher;
 
-        public MainViewModel()
+        public MainViewModel(Dispatcher dispatcher)
         {
+            _dispatcher = dispatcher;
+
             ItemsToTrack = new ObservableCollection<ARItem>();
             LastItems = new List<FlightInfoARItem>();
 
@@ -46,6 +51,9 @@ namespace ArPlaneTrackerClient
                 InfoText = "Connected";
             else
                 InfoText = "Connection failed";
+
+            if (_currentLocation != null)
+                SetPosition(_currentLocation);
         }
 
         public void SetPosition(GeoCoordinate geoCoordinate)
@@ -77,10 +85,29 @@ namespace ArPlaneTrackerClient
 
             LastItems = arItems;
 
-            var handler = NewData;
+            _dispatcher.BeginInvoke(() =>
+            {
+                InfoText = string.Format("{0} - Received {1} planes", DateTime.Now.ToLongTimeString(), arItems.Count);
 
-            if (handler != null)
-                handler(this, arItems);
+                var toRemove = ItemsToTrack.Where(i => !arItems.Contains(i)).ToList();
+                toRemove.ForEach(i => ItemsToTrack.Remove(i));
+
+                var toUpdate = ItemsToTrack.Where(i => arItems.Contains(i)).ToList();
+                toUpdate.ForEach(i => ((FlightInfoARItem)i).UpdateValuesFrom(arItems.Single(a => a.GetHashCode() == i.GetHashCode())));
+
+                var toAdd = arItems.Where(i => !ItemsToTrack.Contains(i)).ToList();
+                toAdd.ForEach(i => ItemsToTrack.Add(i));
+            });
+
+            //var handler = NewData;
+
+            //if (handler != null)
+            //    handler(this, arItems);
+        }
+
+        internal void WakeUp()
+        {
+            //throw new NotImplementedException();
         }
     }
 }

@@ -16,12 +16,28 @@
 
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="MyItemTemplate">
-            <Border CornerRadius="8" Canvas.ZIndex="20" Background="WhiteSmoke">
+            <Border CornerRadius="8" Canvas.ZIndex="2" Background="WhiteSmoke">
                 <StackPanel Margin="4" Background="White">
-                    <TextBlock x:Name="RegistrationBlock" TextWrapping="NoWrap" Text="{Binding ModelText}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
-                    <TextBlock x:Name="ModelBlock" TextWrapping="NoWrap" Text="{Binding SpeedText}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
-                    <TextBlock x:Name="AltitudeBlock" TextWrapping="NoWrap" Text="{Binding AltitudeText}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
-                    <TextBlock x:Name="DistanceBlock" TextWrapping="NoWrap" Text="{Binding DistanceText}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextWrapping="NoWrap" Text="{Binding Registration}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text=" / " FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="{Binding Model}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextWrapping="NoWrap" Text="Speed: " FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="{Binding SpeedKmh}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="km/h" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextWrapping="NoWrap" Text="Alt: " FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="{Binding AltitudeM}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="m" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextWrapping="NoWrap" Text="Dist: " FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="{Binding DistanceToUserKm}" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                        <TextBlock TextWrapping="NoWrap" Text="km" FontSize="16" VerticalAlignment="Center" Margin="0,0,4,0"  TextTrimming="WordEllipsis" Foreground="Black" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -31,15 +47,17 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
 
         <controls:ARDisplay Name="ArDisplay" AttitudeRefreshRate="50" 
-                                             MovementThreshold="10">
+                                             MovementThreshold="10"
+                            ARItems="{Binding ItemsToTrack}">
             <controls:VideoPreview x:Name="VideoPreview" Canvas.ZIndex="1" />
             <controls:WorldView x:Name="WorldView"
-                                MinItemScale="0.1"
+                                MinItemScale="1.0"
                                 MaxItemScale="1.0"
-                                FarClippingPlane="100000000000.0"
+                                FarClippingPlane="100000.0"
                                 NearClippingPlane="1.0"
                                 Canvas.ZIndex="1"
                                 ItemTemplate="{StaticResource MyItemTemplate}"
+                                
                                 />
         </controls:ARDisplay>
 

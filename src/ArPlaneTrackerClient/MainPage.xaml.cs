@@ -4,7 +4,6 @@ using Microsoft.Devices;
 using Microsoft.Devices.Sensors;
 using Microsoft.Phone.Controls;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Device.Location;
 using System.Windows;
@@ -19,10 +18,7 @@ namespace ArPlaneTrackerClient
         // Constructor
         public MainPage()
         {
-            // TODO: DI
-            _vm = new MainViewModel();
-            _vm.NewData += _vm_NewData;
-
+            _vm = new MainViewModel(this.Dispatcher);
             _vm.Start();
 
             this.DataContext = _vm;
@@ -117,19 +113,12 @@ namespace ArPlaneTrackerClient
             _vm.SetPosition(e.Position.Location);
         }
 
-        private void _vm_NewData(object sender, IList<FlightInfoARItem> e)
-        {
-            this.Dispatcher.BeginInvoke(() =>
-                {
-                    _vm.InfoText = string.Format("Data received: {0} planes", e.Count);
-                    ArDisplay.ARItems = new ObservableCollection<ARItem>(e);
-                });
-        }
-
         private void SetLastItems()
         {
             if (!_vm.IsInitialized)
                 return;
+
+            _vm.WakeUp();
 
             this.Dispatcher.BeginInvoke(() =>
             {
