@@ -56,9 +56,9 @@
     <Reference Include="Microsoft.Owin.Security">
       <HintPath>..\..\packages\Microsoft.Owin.Security.2.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Newtonsoft.Json.5.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -106,19 +106,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BusinessLogic\MathHelper.cs" />
     <Compile Include="Controllers\FlightsController.cs" />
-    <Compile Include="BusinessLogic\DataDownloader.cs" />
-    <Compile Include="BusinessLogic\DataHandler.cs" />
-    <Compile Include="BusinessLogic\DataParser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="BusinessLogic\IDataHandler.cs" />
     <Compile Include="Hubs\FlightsHub.cs" />
-    <Compile Include="Models\ExtensionMethods.cs" />
-    <Compile Include="Models\FlightInfo.cs" />
-    <Compile Include="Models\FlightInfoDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="UnhandledExceptionLogger.cs" />
@@ -133,6 +125,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FlightDataHandler\FlightDataHandler.csproj">
+      <Project>{5d2fa582-1620-4e67-b76b-bec21305bcc7}</Project>
+      <Name>FlightDataHandler</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

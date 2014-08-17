@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using FlightDataHandler;
+using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
 
 namespace FlightDataService.Hubs

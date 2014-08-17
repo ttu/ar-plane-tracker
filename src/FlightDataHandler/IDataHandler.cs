@@ -1,9 +1,9 @@
-﻿using FlightDataService.Models;
+﻿using FlightDataHandler.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FlightDataService
+namespace FlightDataHandler
 {
     public interface IDataHandler
     {

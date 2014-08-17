@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FlightDataService
+namespace FlightDataHandler
 {
     public static class MathHelper
     {

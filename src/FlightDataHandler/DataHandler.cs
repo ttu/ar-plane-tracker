@@ -1,4 +1,4 @@
-﻿using FlightDataService.Models;
+﻿using FlightDataHandler.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Timers;
 
 #pragma warning disable 4014
 
-namespace FlightDataService
+namespace FlightDataHandler
 {
     public class DataHandler : IDataHandler
     {
@@ -43,7 +43,7 @@ namespace FlightDataService
             _stopTimer.Elapsed += _stopTimer_Elapsed;
 
             _downloadTimer.Interval = 10000;
-            _downloadTimer.Elapsed += _downloadTimer_Elapsed;
+            _downloadTimer.Elapsed += _fetchTimer_Elapsed;
 
             _updateSender = Task.Factory.StartNew(ClientUpdateAction);
 
@@ -108,10 +108,10 @@ namespace FlightDataService
 
         private async Task<List<FlightInfo>> GetFlightListWhenReady()
         {
-            if (_allFlights == null)
+            while (_allFlights == null)
             {
                 CheckDownloadTimer();
-                await FetchActionAsync();
+                await Task.Delay(50);
             }
 
             return _allFlights;
@@ -183,6 +183,8 @@ namespace FlightDataService
             return retVal;
         }
 
+
+
         private void ClientUpdateAction()
         {
             while (true)
@@ -212,7 +214,7 @@ namespace FlightDataService
             }
         }
 
-        private async void _downloadTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void _fetchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Debug.WriteLine("Download timer elapsed");
 

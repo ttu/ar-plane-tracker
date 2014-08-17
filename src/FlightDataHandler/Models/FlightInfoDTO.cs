@@ -1,4 +1,4 @@
-﻿namespace FlightDataService.Models
+﻿namespace FlightDataHandler.Models
 {
     public class FlightInfoDTO
     {

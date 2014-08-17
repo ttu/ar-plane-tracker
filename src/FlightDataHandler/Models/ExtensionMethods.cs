@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace FlightDataService.Models
+namespace FlightDataHandler.Models
 {
     public static class ExtensionMethods
     {

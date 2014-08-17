@@ -1,10 +1,11 @@
-﻿using FlightDataService.Models;
+﻿using FlightDataHandler.Models;
 using Microsoft.AspNet.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using FlightDataHandler;
 
 namespace FlightDataService
 {

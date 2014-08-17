@@ -1,11 +1,11 @@
-﻿using FlightDataService.Models;
+﻿using FlightDataHandler.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace FlightDataService
+namespace FlightDataHandler
 {
     public static class DataParser
     {
